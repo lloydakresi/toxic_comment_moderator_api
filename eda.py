@@ -22,9 +22,9 @@ k = class_cols_counts.keys()
 comment_average_length = training_set.select(pl.col("comment_text").str.split(" ").list.len().mean()).item()
 max_comment_length = training_set.select(pl.col("comment_text").str.split(" ").list.len().max()).item()
 excess = training_set.filter(pl.col("comment_text").str.split(" ").list.len() > 512).height
-print(comment_average_length)
-print(max_comment_length)
-print(excess)
+#print(comment_average_length)
+#print(max_comment_length)
+#print(excess)
 
 #will do a hard truncation for now. But will return later, to do more preprocessing to preserve all the data (possibly chunking or a sliding window)
 '''
