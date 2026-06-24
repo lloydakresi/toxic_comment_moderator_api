@@ -41,8 +41,8 @@ training_params = TrainingArguments("tcm_trainer",
                                     eval_strategy="steps",
                                     dataloader_pin_memory=False,
                                     num_train_epochs=5,
-                                    per_device_train_batch_size=32,
-                                    per_device_eval_batch_size=32,
+                                    per_device_train_batch_size=128,
+                                    per_device_eval_batch_size=128,
                                     )
 model = AutoModelForSequenceClassification.from_pretrained(checkpoint, num_labels=6)
 
