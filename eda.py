@@ -1,6 +1,6 @@
 import polars as pl
 import matplotlib.pyplot as plt
-training_set_path = "dataset/train.csv"
+training_set_path = "../dataset/train.csv"
 training_set = pl.read_csv(training_set_path)
 total = training_set.height
 print(training_set.columns)

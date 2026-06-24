@@ -91,8 +91,8 @@ trainer = WeightedClassTrainer(
     class_weights=pos_weight_tensor,
     model=model,
     args=training_params,
-    train_dataset=train_ds_test,
-    eval_dataset=val_ds_test,
+    train_dataset=train_ds,
+    eval_dataset=val_ds,
     processing_class=tokenizer,
     compute_metrics=compute_metrics
 )
