@@ -220,3 +220,4 @@ __marimo__/
 *.csv
 tcm_trainer/
 __pycache__/
+dataset/
