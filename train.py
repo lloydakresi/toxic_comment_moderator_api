@@ -39,7 +39,10 @@ val_ds_test = Dataset.from_dict(val_ds[:128])
 training_params = TrainingArguments("tcm_trainer",
                                     logging_strategy="steps",
                                     eval_strategy="steps",
-                                    dataloader_pin_memory=False
+                                    dataloader_pin_memory=False,
+                                    num_train_epochs=5,
+                                    per_device_train_batch_size=32,
+                                    per_device_eval_batch_size=32,
                                     )
 model = AutoModelForSequenceClassification.from_pretrained(checkpoint, num_labels=6)
 
@@ -52,7 +55,7 @@ class WeightedClassTrainer(Trainer):
         labels = inputs.get("labels")
         outputs = model(**inputs)
         logits = outputs.get("logits")
-        loss_fn = nn.BCEWithLogitsLoss(pos_weight=self.class_weights)
+        loss_fn = nn.BCEWithLogitsLoss(self.class_weights.to(logits.device))
         loss = loss_fn(logits, labels)
         return (loss, outputs) if return_outputs else loss
 
@@ -93,6 +96,10 @@ trainer = WeightedClassTrainer(
     processing_class=tokenizer,
     compute_metrics=compute_metrics
 )
+
+print(torch.cuda.is_available())          # True if GPU is detected
+print(torch.cuda.get_device_name(0))      # e.g. "Tesla T4"
+print(f"Model device: {next(model.parameters()).device}")
 trainer.train()
 predictions = trainer.predict(val_ds_test)
 print(predictions)
