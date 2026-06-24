@@ -12,10 +12,11 @@ for c in class_cols:
     class_cols_counts[c] = df_count
 
 not_toxic = training_set.filter(pl.all_horizontal(pl.col(c) == 0 for c in class_cols)).height
-class_cols_counts["not_toxic"] = not_toxic
+#class_cols_counts["not_toxic"] = not_toxic
 clc_percentages = {k:(class_cols_counts[k]*100)/total for k in class_cols_counts.keys()}
-clc_ratios = {k:(class_cols_counts["not_toxic"]/class_cols_counts[k]) for k in class_cols_counts.keys()}
-
+#clc_ratios = {k:(class_cols_counts["not_toxic"]/class_cols_counts[k]) for k in class_cols_counts.keys()}
+pos_weight = {k:(total - class_cols_counts[k])/class_cols_counts[k] for k in class_cols_counts.keys()}
+pos_weight_vals = list(pos_weight.values())
 v = class_cols_counts.values()
 k = class_cols_counts.keys()
 
