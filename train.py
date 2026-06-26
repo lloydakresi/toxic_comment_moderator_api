@@ -1,6 +1,7 @@
 import torch
 from dotenv import load_dotenv
 import os
+import numpy as np
 load_dotenv()
 key = os.environ.get("HF_TOKEN")
 import torch.nn as nn
@@ -9,13 +10,14 @@ from train_val_split import train_ds, val_ds
 from eda import pos_weight_vals
 from datasets import Dataset
 import evaluate
-import numpy as np
+
 
 pos_weight_tensor = torch.Tensor(pos_weight_vals)
 checkpoint = "distilbert-base-uncased"
 tokenizer = AutoTokenizer.from_pretrained(checkpoint)
 
 label_cols = ["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]
+
 def tokenization(batch):
     #tokenize features
     token = tokenizer(batch["comment_text"], truncation=True)
@@ -32,17 +34,20 @@ train_ds.set_format(type="torch")
 val_ds = val_ds.map(tokenization, batched=True, remove_columns=unwanted_cols)
 val_ds.set_format(type="torch")
 
-train_ds_test = Dataset.from_dict(train_ds[:1024])
-val_ds_test = Dataset.from_dict(val_ds[:128])
-
 
 training_params = TrainingArguments("tcm_trainer",
-                                    logging_strategy="steps",
-                                    eval_strategy="steps",
+                                    logging_strategy="epoch",
+                                    eval_strategy="epoch",
+                                    save_strategy="epoch",
+                                    metric_for_best_model="f1_macro",
+                                    greater_is_better=True,
+                                    load_best_model_at_end=True,
+                                    save_total_limit=2,
                                     dataloader_pin_memory=False,
                                     num_train_epochs=5,
                                     per_device_train_batch_size=64,
                                     per_device_eval_batch_size=64,
+
                                     )
 model = AutoModelForSequenceClassification.from_pretrained(checkpoint, num_labels=6)
 
@@ -101,5 +106,6 @@ print(torch.cuda.is_available())          # True if GPU is detected
 print(torch.cuda.get_device_name(0))      # e.g. "Tesla T4"
 print(f"Model device: {next(model.parameters()).device}")
 trainer.train()
-predictions = trainer.predict(val_ds_test)
-print(predictions)
+model.cpu()
+trainer.save_model("./final_model")
+tokenizer.save_pretrained("./final_model")
