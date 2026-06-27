@@ -2,8 +2,10 @@ import torch
 from dotenv import load_dotenv
 import os
 import numpy as np
-load_dotenv()
-key = os.environ.get("HF_TOKEN")
+from huggingface_hub import login
+#load_dotenv()
+#key = os.environ.get("HF_TOKEN")
+login(token=os.environ["HF_TOKEN"])
 import torch.nn as nn
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, TrainingArguments, Trainer, DataCollatorWithPadding
 from train_val_split import train_ds, val_ds
