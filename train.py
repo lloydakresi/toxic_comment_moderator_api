@@ -45,10 +45,11 @@ training_params = TrainingArguments("tcm_trainer",
                                     greater_is_better=True,
                                     load_best_model_at_end=True,
                                     save_total_limit=2,
-                                    dataloader_pin_memory=False,
+                                    dataloader_pin_memory=True,
                                     num_train_epochs=5,
                                     per_device_train_batch_size=128,
                                     per_device_eval_batch_size=128,
+                                    fp16=True
 
                                     )
 model = AutoModelForSequenceClassification.from_pretrained(checkpoint, num_labels=6)
@@ -101,13 +102,13 @@ trainer = WeightedClassTrainer(
     train_dataset=train_ds,
     eval_dataset=val_ds,
     processing_class=tokenizer,
-    compute_metrics=compute_metrics
+    compute_metrics=compute_metrics,
 )
 
 print(torch.cuda.is_available())          # True if GPU is detected
 print(torch.cuda.get_device_name(0))      # e.g. "Tesla T4"
 print(f"Model device: {next(model.parameters()).device}")
 trainer.train()
-model.cpu()
+#model.cpu()
 trainer.save_model("./final_model")
 tokenizer.save_pretrained("./final_model")
