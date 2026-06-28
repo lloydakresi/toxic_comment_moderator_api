@@ -47,8 +47,8 @@ training_params = TrainingArguments("tcm_trainer",
                                     save_total_limit=2,
                                     dataloader_pin_memory=True,
                                     num_train_epochs=5,
-                                    per_device_train_batch_size=128,
-                                    per_device_eval_batch_size=128,
+                                    per_device_train_batch_size=256,
+                                    per_device_eval_batch_size=256,
                                     fp16=True
 
                                     )
