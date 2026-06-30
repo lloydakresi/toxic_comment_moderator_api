@@ -10,15 +10,13 @@ import torch.nn as nn
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, TrainingArguments, Trainer, DataCollatorWithPadding
 from train_val_split import train_ds, val_ds
 from eda import pos_weight_vals
-from datasets import Dataset
+from utils import label_cols
 import evaluate
 
 
 pos_weight_tensor = torch.Tensor(pos_weight_vals)
 checkpoint = "distilbert-base-uncased"
 tokenizer = AutoTokenizer.from_pretrained(checkpoint)
-
-label_cols = ["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]
 
 def tokenization(batch):
     #tokenize features
