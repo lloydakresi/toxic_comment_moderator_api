@@ -3,9 +3,9 @@ from dotenv import load_dotenv
 import os
 import numpy as np
 from huggingface_hub import login
-#load_dotenv()
-#key = os.environ.get("HF_TOKEN")
-login(token=os.environ["HF_TOKEN"])
+load_dotenv()
+key = os.environ.get("HF_TOKEN")
+login(token=key)
 import torch.nn as nn
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, TrainingArguments, Trainer, DataCollatorWithPadding
 from train_val_split import train_ds, val_ds
@@ -45,11 +45,9 @@ training_params = TrainingArguments("tcm_trainer",
                                     greater_is_better=True,
                                     load_best_model_at_end=True,
                                     save_total_limit=2,
-                                    dataloader_pin_memory=True,
                                     num_train_epochs=5,
                                     per_device_train_batch_size=128,
-                                    per_device_eval_batch_size=128,
-                                    fp16=True
+                                    per_device_eval_batch_size=32,
 
                                     )
 model = AutoModelForSequenceClassification.from_pretrained(checkpoint, num_labels=6)
@@ -106,9 +104,9 @@ trainer = WeightedClassTrainer(
 )
 
 print(torch.cuda.is_available())          # True if GPU is detected
-print(torch.cuda.get_device_name(0))      # e.g. "Tesla T4"
+#print(torch.cuda.get_device_name(0))      # e.g. "Tesla T4"
 print(f"Model device: {next(model.parameters()).device}")
-trainer.train()
+#trainer.train()
 #model.cpu()
-trainer.save_model("./final_model")
-tokenizer.save_pretrained("./final_model")
+#trainer.save_model("./final_model")
+#tokenizer.save_pretrained("./final_model")
