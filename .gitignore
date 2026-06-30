@@ -219,4 +219,4 @@ __marimo__/
 
 tcm_trainer/
 __pycache__/
-"final_model/model.safetensors" 
+final_model/
