@@ -32,4 +32,4 @@ def predict(text:str):
         } for label, prob in zip(label_cols, probs)
     }
 
-print(predict("I will kill you, you white American monkey!"))
+print(predict("you faggot!"))
